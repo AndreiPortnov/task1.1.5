@@ -1,33 +1,25 @@
 package jm.task.core.jdbc.util;
 
-import com.mysql.jdbc.Driver;
-
-
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-
-import static jm.task.core.jdbc.constants.StaticConstants.*;
+import jm.task.core.jdbc.model.User;
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
 
 public class Util {
     // реализуйте настройку соеденения с БД
+    private static SessionFactory sessionFactory;
 
-    private final Connection connection;
+    public static SessionFactory getSessionFactory() {
+        if (sessionFactory == null) {
+            try {
 
-    String url = URL_KEY;
-    String username = USERNAME_KEY;
-    String password = PASSWORD_KEY;
+                Configuration configuration = new Configuration().addAnnotatedClass(User.class);
+                sessionFactory = configuration.buildSessionFactory();
 
-    public Util() {
-
-        try {
-            connection = DriverManager.getConnection(url, username, password);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
+        return sessionFactory;
     }
 
-    public Connection getConnection() {
-        return connection;
-    }
 }
